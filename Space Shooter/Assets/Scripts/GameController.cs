@@ -12,11 +12,22 @@ public class GameController : MonoBehaviour
     public float spawnWait;
     public float startWait;
     public float waveWait;
+    public BGSCroller scrollerScript;
+    public ParticleSpeed particleScript;
+    public ParticleSpeed particleScript2;
+    public AudioSource musicSource;
+    public AudioClip clipOne;
+    public AudioClip clipTwo;
+    public Mover moveScript;
+    public Mover moveScript2;
+    public Mover moveScript3;
 
     public Text ScoreText;
     public Text restartText;
     public Text gameOverText;
     public Text winText;
+    public Text hardMode;
+
     private int score;
     private bool gameOver;
     private bool restart;
@@ -31,6 +42,10 @@ public class GameController : MonoBehaviour
         score = 0;
         UpdateScore();
         StartCoroutine(SpawnWaves());
+        hardMode.text = "Press 'H' for Hard Mode";
+        moveScript.speed = -5;
+        moveScript2.speed = -5;
+        moveScript3.speed = -5;
     }
 
     void Update()
@@ -50,8 +65,16 @@ public class GameController : MonoBehaviour
         if (score >= 100)
         {
             Destroy(GameObject.FindWithTag("Enemy"));
+            Destroy(GameObject.FindWithTag("Pickup"));
+            hardMode.text = "";
         }
-
+        if (Input.GetKeyDown(KeyCode.H))
+        {
+            moveScript.speed = -15;
+            moveScript2.speed = -15;
+            moveScript3.speed = -15;
+            hardMode.text = "HARD MODE";
+        }
     }
 
     IEnumerator SpawnWaves()
@@ -92,11 +115,19 @@ public class GameController : MonoBehaviour
             winText.text = "You win! Created By Raymond Boysel";
             gameOver = true;
             restart = true;
+            scrollerScript.scrollSpeed -= 50;
+            particleScript.hSliderValue += 250;
+            particleScript2.hSliderValue += 250;
+            musicSource.clip = clipOne;
+            musicSource.Play();
         }
     }
     public void GameOver()
     {
+        hardMode.text = "";
         gameOverText.text = "Game Over! Created By Raymond Boysel";
         gameOver = true;
+        musicSource.clip = clipTwo;
+        musicSource.Play();
     }
 }
